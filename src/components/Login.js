@@ -3,38 +3,42 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import "../css/login.css";
 import { useRouter } from "next/navigation";
+import { useUserStore } from "@/store/store";
 
 function Login() {
+  const setLogin = useUserStore(store => store.setLogin)
+  const isLogin = useUserStore(store => store.isLogin)
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
   const logintoAccount = () => {
-   if (username == "" || password == "") {
-    toast.error("Fill all fields to create your account.", {
-      position: "top-center",
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
+    if (username == "" || password == "") {
+      toast.error("Fill all fields to create your account.", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
       });
-   }
-   else {
-    fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        password: password,
-        username: username,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-       
+    }
+    else {
+      // fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth/login`, {
+      fetch(`/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          password: password,
+          username: username,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+
           if (data.type == "success") {
             toast.success(data.message, {
               position: "top-center",
@@ -46,6 +50,7 @@ function Login() {
               progress: undefined,
               theme: "colored",
             });
+            localStorage.setItem("codysnippets_token", data.token);
             router.push("/");
           }
           else {
@@ -58,10 +63,10 @@ function Login() {
               draggable: true,
               progress: undefined,
               theme: "colored",
-              });
-            }
-      });
-   }
+            });
+          }
+        });
+    }
   };
   return (
     <div
@@ -72,11 +77,11 @@ function Login() {
       <div className="hero-content text-center text-neutral-content">
         <div id="content" className="flex justify-center items-center flex-col max-w-md">
           <h1 className="text-4xl font-bold">Login to your Account</h1>
-        <input value={username} onChange={e=>setUsername(e.target.value)} type="text" placeholder="Username" className="input input-bordered input-primary w-full max-w-xs" />
+          <input value={username} onChange={e => setUsername(e.target.value)} type="text" placeholder="Username" className="input input-bordered input-primary w-full max-w-xs" />
 
-        <input value={password} onChange={e=>setPassword(e.target.value)} type="password" placeholder="Password" className="input input-bordered input-primary w-full max-w-xs" />
+          <input value={password} onChange={e => setPassword(e.target.value)} type="password" placeholder="Password" className="input input-bordered input-primary w-full max-w-xs" />
 
-        <button className="btn btn-primary" onClick={logintoAccount}>Login</button>
+          <button className="btn btn-primary" onClick={logintoAccount}>Login</button>
 
 
         </div>

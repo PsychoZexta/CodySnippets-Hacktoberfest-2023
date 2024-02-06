@@ -13,52 +13,41 @@ function Signup() {
 
   const createAccount = () => {
     console.log("Creating account...");
-   if (email == "" || username == "" || password == "") {
-    toast.error("Fill all fields to create your account.", {
-      position: "top-center",
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
+    if (email == "" || username == "" || password == "") {
+      toast.error("Fill all fields to create your account.", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
       });
-   }
-   else if (username.indexOf(" ") != -1){
-    alert("Username should not include a space.")
-  }
-   else {
-    fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth/signup`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-        username: username,
-        isBlocked: false,
-        isAdmin: false,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.errorCode == 11000) {
-          // User already exist with this username
-          toast.error("A User already exist with username you provided. Please enter another username.", {
-            position: "top-center",
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            });
-        } else {
-          if (data.type == "success") {
-            toast.success(data.message, {
+    }
+    else if (username.indexOf(" ") != -1) {
+      alert("Username should not include a space.")
+    }
+    else {
+      // fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth/signup`, {
+      fetch(`/api/auth/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+          username: username,
+          isBlocked: false,
+          isAdmin: false,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.errorCode == 11000) {
+            // User already exist with this username
+            toast.error("A User already exist with username you provided. Please enter another username.", {
               position: "top-center",
               autoClose: 3000,
               hideProgressBar: true,
@@ -68,23 +57,35 @@ function Signup() {
               progress: undefined,
               theme: "colored",
             });
-            router.push("/");
-          }
-          else {
-            toast.error(data.message, {
-              position: "top-center",
-              autoClose: 3000,
-              hideProgressBar: true,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "colored",
+          } else {
+            if (data.type == "success") {
+              toast.success(data.message, {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
               });
+              router.push("/");
+            }
+            else {
+              toast.error(data.message, {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+              });
+            }
           }
-        }
-      });
-   }
+        });
+    }
   };
 
   return (

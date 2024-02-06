@@ -2,7 +2,6 @@ import "../css/globals.css";
 import { Inter } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
-
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import Footer from "@/components/Footer";
@@ -33,7 +32,7 @@ export default function RootLayout({ children }) {
 
         {children}
 
-        <Footer/>
+        <Footer />
       </body>
     </html>
   );
